@@ -1,0 +1,19 @@
+<div class="permissions-page">
+  <div class="page-header">
+    <div class="header-text">
+       <h1>Resource Permissions</h1>
+       <p>Review granular access policies across enterprise assets</p>
+    </div>
+  </div>
+
+  <div class="permissions-grid">
+    <div class="glass-card perm-card" *ngFor="let p of permissions">
+      <div class="perm-icon">🛡️</div>
+      <div class="perm-info">
+        <h3>{{ p.action }}</h3>
+        <p>Resource: <strong>{{ p.resource?.resourceName }}</strong></p>
+        <span class="type-badge">{{ p.resource?.resourceType || 'INTERNAL' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

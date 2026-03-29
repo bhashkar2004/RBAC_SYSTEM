@@ -1,0 +1,104 @@
+<div class="dashboard-page">
+  <div class="header">
+    <h1>Security Overview</h1>
+    <p>Monitor and manage enterprise access controls</p>
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="metrics-grid">
+    <div class="glass-card metric-card">
+      <div class="metric-icon">👥</div>
+      <div class="metric-info">
+        <span class="label">Total Users</span>
+        <span class="value">{{ stats.users }}</span>
+      </div>
+    </div>
+    <div class="glass-card metric-card">
+      <div class="metric-icon">🔑</div>
+      <div class="metric-info">
+        <span class="label">Active Roles</span>
+        <span class="value">{{ stats.roles }}</span>
+      </div>
+    </div>
+    <div class="glass-card metric-card">
+      <div class="metric-icon">🛡️</div>
+      <div class="metric-info">
+        <span class="label">Permissions</span>
+        <span class="value">{{ stats.permissions }}</span>
+      </div>
+    </div>
+    <div class="glass-card metric-card">
+      <div class="metric-icon">📜</div>
+      <div class="metric-info">
+        <span class="label">Access Logs</span>
+        <span class="value">{{ stats.logs }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-content">
+    <!-- Recent Activity -->
+    <div class="glass-card activity-section">
+      <div class="section-header">
+        <h3>Recent Activity</h3>
+        <a routerLink="/logs" class="view-all">View All</a>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item empty-state" *ngIf="recentLogs.length === 0">
+          <p>No recent activity found at this time.</p>
+        </div>
+        <div class="activity-item" *ngFor="let log of recentLogs">
+          <div class="activity-dot shadow-glow"></div>
+          <div class="activity-details">
+            <p><strong>{{ log.user?.userName }}</strong> performed <strong>{{ log.action }}</strong> on <em>{{ log.resource }}</em></p>
+            <span class="time">{{ log.timeStamp | date:'shortTime' }}</span>
+          </div>
+          <span class="status-badge" [class.success]="log.result === 'SUCCESS'">{{ log.result }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="glass-card actions-section">
+      <h3>Quick Actions</h3>
+      <div class="actions-grid">
+        <button class="action-btn" routerLink="/users">
+          <i>➕</i> Add User
+        </button>
+        <button class="action-btn" routerLink="/roles">
+          <i>⚙️</i> Manage Roles
+        </button>
+        <button class="action-btn" routerLink="/permissions">
+          <i>🔒</i> Set Permissions
+        </button>
+      </div>
+    </div>
+    
+    <!-- Pending Requests Inbox -->
+    <div class="glass-card activity-section" style="grid-column: 1 / -1;">
+      <div class="section-header">
+        <h3>Pending Access Requests</h3>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item empty-state" *ngIf="pendingRequests.length === 0">
+          <p>Inbox zero! No pending requests at this time.</p>
+        </div>
+        <div class="activity-item" *ngFor="let req of pendingRequests" style="justify-content: space-between;">
+          <div style="display: flex; gap: 15px; align-items: center;">
+            <div class="activity-dot shadow-glow" style="background: #f59e0b; box-shadow: 0 0 10px #f59e0b;"></div>
+            <div class="activity-details">
+              <p><strong>{{ req.userName }}</strong> requested access to <em>{{ req.resource }}</em></p>
+              <span class="time" style="display: block; margin-top: 4px; color: #d1d5db;">Reason: {{ req.reason }}</span>
+              <span class="time">{{ req.requestDate | date:'short' }}</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-primary" style="padding: 6px 12px; font-size: 0.8rem;" (click)="approveRequest(req.id)">Approve</button>
+            <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; border-color: #ef4444; color: #ef4444; background: transparent;" (click)="rejectRequest(req.id)">Deny</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>

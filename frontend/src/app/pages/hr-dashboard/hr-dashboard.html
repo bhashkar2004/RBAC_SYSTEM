@@ -1,0 +1,119 @@
+<div class="hr-page">
+  <div class="page-header">
+    <div class="header-text">
+       <h1>Human Resources</h1>
+       <p>Manage employee status and role assignments</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-primary" (click)="openAddUserModal()">+ Add Employee</button>
+    </div>
+  </div>
+
+<!-- Profile Modal -->
+<div class="modal-overlay" *ngIf="selectedEmployee">
+  <div class="glass-card modal-content">
+    <div class="modal-header">
+      <h2>Employee Profile</h2>
+      <button class="close-btn" (click)="closeProfile()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="profile-header">
+        <div class="avatar-lg">{{ selectedEmployee.userName.charAt(0).toUpperCase() }}</div>
+        <div>
+          <h3 style="margin: 0; color: #fff; font-size: 1.3rem;">{{ selectedEmployee.userName }}</h3>
+          <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 0.9rem;">{{ selectedEmployee.userEmail }}</p>
+        </div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="label">System Role</span>
+          <span class="value action-tag">{{ selectedEmployee.role || 'NONE' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Account Status</span>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <span class="status-badge" [class.success]="selectedEmployee.userStatus === 'ACTIVE'" [class.inactive]="selectedEmployee.userStatus === 'INACTIVE'">
+              {{ selectedEmployee.userStatus }}
+            </span>
+            <button class="btn-secondary-sm" (click)="toggleStatus(selectedEmployee)">Toggle Status</button>
+          </div>
+        </div>
+        <div class="detail-item">
+          <span class="label">Account Type</span>
+          <span class="value">{{ selectedEmployee.userType }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">User ID</span>
+          <span class="value">#{{ selectedEmployee.userId }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal-overlay" *ngIf="isAddModalOpen">
+  <div class="glass-card modal-content" style="max-width: 500px;">
+    <div class="modal-header">
+      <h2>Add New Employee</h2>
+      <button class="close-btn" (click)="closeAddModal()">×</button>
+    </div>
+    <div class="modal-body form-grid">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" [(ngModel)]="userForm.userName" placeholder="Enter full name" />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" [(ngModel)]="userForm.userEmail" placeholder="Enter workspace email" />
+      </div>
+      <div class="form-group">
+        <label>Initial Password</label>
+        <input type="password" [(ngModel)]="userForm.password" placeholder="Enter secure password" />
+      </div>
+      <div class="form-group border-separator" style="margin-top: 5px;">
+        <label>System Role</label>
+        <select [(ngModel)]="userForm.role">
+          <option *ngFor="let r of roles" [value]="r.roleName">{{ r.roleName }}</option>
+        </select>
+        <small style="color: var(--text-secondary); margin-top: 5px;">HR Team assumes responsibility for granting role-based access.</small>
+      </div>
+    </div>
+    <div class="modal-footer" style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+      <button class="btn-secondary" (click)="closeAddModal()">Cancel</button>
+      <button class="btn-primary" (click)="saveUser()">Create Employee</button>
+    </div>
+  </div>
+</div>  <div class="glass-card table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Employee</th>
+          <th>Current Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let emp of employees">
+          <td>
+            <div class="emp-info">
+              <div class="avatar">{{ emp.userName.charAt(0) }}</div>
+              <div class="details">
+                <span class="name">{{ emp.userName }}</span>
+                <span class="email">{{ emp.userEmail }}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <select [(ngModel)]="emp.role" (change)="updateRole(emp)" class="role-select">
+              <option *ngFor="let r of roles" [value]="r.roleName">{{ r.roleName }}</option>
+            </select>
+          </td>
+          <td>
+            <button class="btn-secondary-sm" (click)="openProfile(emp)">View Profile</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

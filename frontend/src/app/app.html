@@ -1,0 +1,105 @@
+<div class="app-container">
+  <!-- Sidebar -->
+  <nav class="sidebar glass-card" *ngIf="isLoggedIn()">
+    <div class="brand">
+      <div class="logo-icon">S</div>
+      <span>SECUREWORKS</span>
+    </div>
+
+    <div class="nav-links">
+      <!-- Admin/Security Links -->
+      <ng-container *ngIf="getRole() === 'ADMIN'">
+        <a routerLink="/admin" routerLinkActive="active" class="nav-item">
+          <i class="icon">📊</i> Dashboard
+        </a>
+        <a routerLink="/users" routerLinkActive="active" class="nav-item">
+          <i class="icon">👥</i> Users
+        </a>
+        <a routerLink="/roles" routerLinkActive="active" class="nav-item">
+          <i class="icon">🔑</i> Roles
+        </a>
+        <a routerLink="/permissions" routerLinkActive="active" class="nav-item">
+          <i class="icon">🛡️</i> Permissions
+        </a>
+        <a routerLink="/logs" routerLinkActive="active" class="nav-item">
+          <i class="icon">📜</i> Access Logs
+        </a>
+      </ng-container>
+
+      <!-- HR Links -->
+      <ng-container *ngIf="getRole() === 'HR'">
+        <a routerLink="/hr" routerLinkActive="active" class="nav-item">
+          <i class="icon">👔</i> HR Dashboard
+        </a>
+      </ng-container>
+
+      <!-- Employee Links -->
+      <ng-container *ngIf="getRole() === 'EMPLOYEE' || getRole() === 'PARTNER'">
+        <a routerLink="/employee" routerLinkActive="active" class="nav-item">
+          <i class="icon">🏠</i> My Dashboard
+        </a>
+        <a *ngIf="getRole() === 'PARTNER'" routerLink="/partner" routerLinkActive="active" class="nav-item">
+          <i class="icon">🤝</i> Partner Portal
+        </a>
+      </ng-container>
+    </div>
+
+    <div class="spacer"></div>
+
+    <a (click)="openProfileModal()" class="nav-item" style="cursor: pointer; margin-bottom: 10px;">
+      <i class="icon">👤</i> My Profile
+    </a>
+
+    <button class="logout-btn" (click)="logout()">
+      <span>Log Out</span>
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main [class.full-width]="!isLoggedIn()">
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+
+<!-- Global My Profile Modal -->
+<div class="modal-overlay" *ngIf="showProfileModal">
+  <div class="glass-card modal-content" style="max-width: 500px; padding: 25px;">
+    <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px;">
+      <h2 style="font-size: 1.4rem; margin: 0; color: #fff;">My Profile</h2>
+      <button class="close-btn" (click)="closeProfileModal()" style="background: none; border: none; color: #9ca3af; font-size: 1.5rem; cursor: pointer;">×</button>
+    </div>
+    <div class="modal-body" *ngIf="myProfile">
+      <div class="profile-header" style="display: flex; gap: 20px; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 20px;">
+        <div class="avatar-lg" style="width: 60px; height: 60px; background: #00f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; color: #000;">
+          {{ myProfile.userName.charAt(0).toUpperCase() }}
+        </div>
+        <div>
+          <h3 style="margin: 0; color: #fff; font-size: 1.3rem;">{{ myProfile.userName }}</h3>
+          <p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 0.9rem;">{{ myProfile.userEmail }}</p>
+        </div>
+      </div>
+      <div class="detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="detail-item" style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="label" style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase;">System Role</span>
+          <span class="value" style="color: #fff; font-size: 1.1rem; font-weight: 500;">
+            {{ myProfile.roles && myProfile.roles.length ? myProfile.roles[0].roleName || myProfile.roles[0] : 'NONE' }}
+          </span>
+        </div>
+        <div class="detail-item" style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="label" style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase;">Account Status</span>
+          <span class="value" style="color: #10b981; font-size: 1.1rem; font-weight: 500;">{{ myProfile.userStatus }}</span>
+        </div>
+        <div class="detail-item" style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="label" style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase;">Account Type</span>
+          <span class="value" style="color: #fff; font-size: 1.1rem; font-weight: 500;">{{ myProfile.userType }}</span>
+        </div>
+        <div class="detail-item" style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="label" style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase;">User ID</span>
+          <span class="value" style="color: #fff; font-size: 1.1rem; font-weight: 500;">#{{ myProfile.userId }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

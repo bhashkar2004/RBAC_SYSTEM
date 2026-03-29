@@ -1,0 +1,65 @@
+<div class="roles-page">
+  <div class="page-header">
+    <div class="header-text">
+       <h1>Role Management</h1>
+       <p>Define enterprise roles and their associated access rights</p>
+    </div>
+    <button class="btn-primary" (click)="isModalOpen = true">
+      <span>+ Create New Role</span>
+    </button>
+  </div>
+
+  <div class="roles-grid">
+    <div class="glass-card role-card" *ngFor="let role of roles">
+      <div class="role-header">
+        <div class="role-icon">🔑</div>
+        <div class="role-title">
+          <h3>{{ role.roleName }}</h3>
+          <span class="badge">{{ role.permissions?.length || 0 }} Permissions</span>
+        </div>
+        <button class="btn-icon-sm" (click)="deleteRole(role.roleId)">🗑️</button>
+      </div>
+
+      <div class="permissions-section">
+        <h4>Permissions</h4>
+        <div class="permissions-list">
+          <div class="permission-item" *ngFor="let perm of allPermissions">
+            <label class="switch-container">
+              <input type="checkbox" 
+                     [checked]="hasPermission(role, perm.permissionId)" 
+                     (change)="togglePermission(role, perm)">
+              <span class="switch"></span>
+              <span class="permission-label">{{ perm.action }} - {{ perm.resource?.resourceName }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Role Modal -->
+  <div class="modal-overlay" *ngIf="isModalOpen">
+    <div class="glass-card modal-content">
+      <div class="modal-header">
+        <h3>Create New Role</h3>
+        <button class="close-btn" (click)="isModalOpen = false">✕</button>
+      </div>
+      
+      <form (ngSubmit)="saveRole()">
+        <div class="form-group">
+          <label>Role Name</label>
+          <input type="text" [(ngModel)]="newRole.roleName" name="roleName" placeholder="e.g. SECURITY_AUDITOR" required />
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <input type="text" [(ngModel)]="newRole.roleDescription" name="roleDescription" placeholder="What can this role do?" />
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="isModalOpen = false">Cancel</button>
+          <button type="submit" class="btn-primary">Create Role</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

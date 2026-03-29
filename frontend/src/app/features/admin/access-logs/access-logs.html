@@ -1,0 +1,45 @@
+<div class="logs-page">
+  <div class="page-header">
+    <div class="header-text">
+       <h1>Access Audit Logs</h1>
+       <p>Monitor real-time system access and security events</p>
+    </div>
+  </div>
+
+  <div class="table-controls glass-card">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Filter by user, action, or resource..." />
+    </div>
+  </div>
+
+  <div class="glass-card table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>User</th>
+          <th>Action</th>
+          <th>Resource</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="filteredLogs.length === 0">
+          <td colspan="5" style="text-align: center; padding: 2rem;">No access logs found.</td>
+        </tr>
+        <tr *ngFor="let l of filteredLogs">
+          <td><span class="time-col">{{ l.timeStamp | date:'short' }}</span></td>
+          <td class="user-col"><strong>{{ l.user?.userName }}</strong></td>
+          <td><span class="action-tag">{{ l.action }}</span></td>
+          <td><code>{{ l.resource }}</code></td>
+          <td>
+            <span class="status-badge" [class.success]="l.result === 'SUCCESS'">
+              {{ l.result }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

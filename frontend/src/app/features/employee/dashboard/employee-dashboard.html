@@ -1,0 +1,85 @@
+<div class="employee-page">
+  <div class="page-header">
+    <div class="header-text">
+       <h1>Welcome Back{{ myProfile ? ', ' + myProfile.userName : '' }}</h1>
+       <p>Review your current access levels and request new resources</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="openProfile()">My Profile</button>
+    </div>
+  </div>
+
+  <div class="employee-content">
+    <!-- Permissions Section -->
+    <div class="glass-card permissions-section">
+      <h3>My Current Access</h3>
+      <div class="perm-list">
+        <div class="perm-card-lite" *ngFor="let p of myPermissions">
+          <div class="perm-icon-sm">🛡️</div>
+          <div class="perm-info">
+            <span class="action">{{ p.action }}</span>
+            <span class="res">{{ p.resource }}</span>
+          </div>
+          <span class="status-tag">Active</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Request Access Section -->
+    <div class="glass-card request-section">
+      <h3>Request Access</h3>
+      <form (ngSubmit)="requestAccess()">
+        <div class="form-group">
+          <label>Target Resource</label>
+          <input type="text" [(ngModel)]="request.resource" name="resource" placeholder="e.g. Production Database" required />
+        </div>
+        <div class="form-group">
+          <label>Reason for Request</label>
+          <textarea [(ngModel)]="request.reason" name="reason" rows="3" placeholder="Briefly explain why you need this access"></textarea>
+        </div>
+        <button type="submit" class="btn-primary request-btn">Submit Request</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- My Profile Modal -->
+<div class="modal-overlay" *ngIf="showProfileModal">
+  <div class="glass-card modal-content" style="max-width: 500px;">
+    <div class="modal-header">
+      <h2>My Profile</h2>
+      <button class="close-btn" (click)="closeProfile()">×</button>
+    </div>
+    <div class="modal-body" *ngIf="myProfile">
+      <div class="profile-header" style="display: flex; gap: 20px; align-items: center; border-bottom: 1px dashed var(--glass-border); padding-bottom: 20px; margin-bottom: 20px;">
+        <div class="avatar-lg" style="width: 60px; height: 60px; background: var(--primary-glow); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; color: #000;">
+          {{ myProfile.userName.charAt(0).toUpperCase() }}
+        </div>
+        <div>
+          <h3 style="margin: 0; color: #fff; font-size: 1.3rem;">{{ myProfile.userName }}</h3>
+          <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 0.9rem;">{{ myProfile.userEmail }}</p>
+        </div>
+      </div>
+      <div class="detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="detail-item" style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="label" style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">System Role</span>
+          <span class="value" style="color: #fff; font-size: 1.1rem; font-weight: 500;">
+            {{ myProfile.roles && myProfile.roles.length ? myProfile.roles[0].roleName || myProfile.roles[0] : 'NONE' }}
+          </span>
+        </div>
+        <div class="detail-item" style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="label" style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Account Status</span>
+          <span class="value" style="color: #10b981; font-size: 1.1rem; font-weight: 500;">{{ myProfile.userStatus }}</span>
+        </div>
+        <div class="detail-item" style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="label" style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Account Type</span>
+          <span class="value" style="color: #fff; font-size: 1.1rem; font-weight: 500;">{{ myProfile.userType }}</span>
+        </div>
+        <div class="detail-item" style="display: flex; flex-direction: column; gap: 5px;">
+          <span class="label" style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">User ID</span>
+          <span class="value" style="color: #fff; font-size: 1.1rem; font-weight: 500;">#{{ myProfile.userId }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

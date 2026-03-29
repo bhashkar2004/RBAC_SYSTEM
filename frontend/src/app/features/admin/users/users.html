@@ -1,0 +1,95 @@
+<div class="users-page">
+  <div class="page-header">
+    <div class="header-text">
+       <h1>User Management</h1>
+       <p>Manage enterprise identities and access levels</p>
+    </div>
+    <button class="btn-primary" (click)="openModal()">
+      <span>+ Add New User</span>
+    </button>
+  </div>
+
+  <div class="table-controls glass-card">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" [(ngModel)]="searchTerm" (input)="applyFilter()" placeholder="Search by name or email..." />
+    </div>
+
+  </div>
+
+  <div class="glass-card table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let u of filteredUsers">
+          <td>
+            <div class="user-info">
+              <div class="avatar">{{ u.userName.charAt(0) }}</div>
+              <span>{{ u.userName }}</span>
+            </div>
+          </td>
+          <td>{{ u.userEmail }}</td>
+          <td><span class="role-badge">{{ (u.roles && u.roles.length > 0) ? u.roles[0] : 'User' }}</span></td>
+          <td><span class="status-dot online"></span> Active</td>
+          <td class="actions-col">
+            <button class="action-btn-sm" (click)="openModal(u)">✏️</button>
+            <button class="action-btn-sm delete" (click)="deleteUser(u.userId)">🗑️</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- User Modal -->
+  <div class="modal-overlay" *ngIf="isModalOpen">
+    <div class="glass-card modal-content">
+      <div class="modal-header">
+        <h3>{{ editingUser ? 'Edit User' : 'Create New User' }}</h3>
+        <button class="close-btn" (click)="closeModal()">✕</button>
+      </div>
+      
+      <form (ngSubmit)="saveUser()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>User Name</label>
+            <input type="text" [(ngModel)]="userForm.userName" name="userName" required />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" [(ngModel)]="userForm.userEmail" name="userEmail" required />
+          </div>
+          <div class="form-group" *ngIf="!editingUser">
+            <label>Initial Password</label>
+            <input type="password" [(ngModel)]="userForm.password" name="password" required />
+          </div>
+          <div class="form-group">
+            <label>Initial Role</label>
+            <select [(ngModel)]="userForm.role" name="role">
+              <option value="ADMIN">Admin</option>
+              <option value="SECURITY">Security Team</option>
+              <option value="HR">HR Specialist</option>
+              <option value="IT">IT Department</option>
+              <option value="EMPLOYEE">Employee</option>
+              <option value="PARTNER">External Partner</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn-primary">
+            {{ editingUser ? 'Update User' : 'Create User' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
